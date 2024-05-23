@@ -33,25 +33,25 @@ const mainMenu = async () => {
 
   switch (action) {
     case "View all departments":
-      viewAllDepartments();
+      await viewAllDepartments();
       break;
     case "View all roles":
-      viewAllRoles();
+      await viewAllRoles();
       break;
     case "View all employees":
-      viewAllEmployees();
+      await viewAllEmployees();
       break;
     case "Add a department":
-      addDepartment();
+      await addDepartment();
       break;
     case "Add a role":
-      addRole();
+      await addRole();
       break;
     case "Add an employee":
-      addEmployee();
+      await addEmployee();
       break;
     case "Update an employee role":
-      updateEmployeeRole();
+      await updateEmployeeRole();
       break;
     case "Exit":
       await pool.end();
@@ -81,11 +81,11 @@ const addDepartment = async () => {
     {
       type: "input",
       name: "name",
-      message: "Enter a name of the department:",
+      message: "Enter the name of the department:",
     },
   ]);
 
-  await pool.query("INSERT INTO departments (name) VALUE ($1)", [name]);
+  await pool.query("INSERT INTO departments (name) VALUES ($1)", [name]);
   console.log(`Added department: ${name}`);
 };
 
@@ -105,20 +105,19 @@ const addRole = async () => {
     {
       type: "input",
       name: "salary",
-      message: " Enter the salary for the role:",
+      message: "Enter the salary for the role:",
     },
     {
-      type: "input",
+      type: "list",
       name: "department",
-      message: "Select the department for the role",
+      message: "Select the department for the role:",
       choices: departmentChoices,
     },
   ]);
 
   await pool.query(
-    `INSERT INTO ROLES (title, salary, department) VALUES ($1, $2, $3) `[
-      (title, salary, department)
-    ]
+    "INSERT INTO roles (title, salary, department_id) VALUES ($1, $2, $3)",
+    [title, salary, department]
   );
   console.log(`Added role: ${title}`);
 };
@@ -126,6 +125,12 @@ const addRole = async () => {
 const addEmployee = async () => {
   const roles = await pool.query("SELECT * FROM roles");
   const roleChoices = roles.rows.map((role) => ({
+    name: role.title,
+    value: role.id,
+  }));
+
+  const employees = await pool.query("SELECT * FROM employees");
+  const managerChoices = employees.rows.map((emp) => ({
     name: `${emp.first_name} ${emp.last_name}`,
     value: emp.id,
   }));
@@ -140,26 +145,63 @@ const addEmployee = async () => {
     {
       type: "input",
       name: "lastName",
-      message: " Enter the last name of the employee:",
+      message: "Enter the last name of the employee:",
     },
     {
-      type: "input",
+      type: "list",
       name: "role",
-      message: "Select the role for the employee",
+      message: "Select the role for the employee:",
       choices: roleChoices,
     },
     {
       type: "list",
       name: "manager",
-      message: "Select the manager for the employee",
+      message: "Select the manager for the employee:",
       choices: managerChoices,
     },
   ]);
 
   await pool.query(
-    "INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3,$4) "[
-      (firstName, lastName, role, manager)
-    ]
+    "INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)",
+    [firstName, lastName, role, manager]
   );
-  console.log(`Added employee: ${firstNmae} ${lastName}`);
+  console.log(`Added employee: ${firstName} ${lastName}`);
 };
+
+const updateEmployeeRole = async () => {
+  const employees = await pool.query("SELECT * FROM employees");
+  const employeeChoices = employees.rows.map((emp) => ({
+    name: `${emp.first_name} ${emp.last_name}`,
+    value: emp.id,
+  }));
+
+  const roles = await pool.query("SELECT * FROM roles");
+  const roleChoices = roles.rows.map((role) => ({
+    name: role.title,
+    value: role.id,
+  }));
+
+  const { employee, role } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "employee",
+      message: "Select the employee to update:",
+      choices: employeeChoices,
+    },
+    {
+      type: "list",
+      name: "role",
+      message: "Select the new role for the employee:",
+      choices: roleChoices,
+    },
+  ]);
+
+  await pool.query("UPDATE employees SET role_id = $1 WHERE id = $2", [
+    role,
+    employee,
+  ]);
+  console.log("Employee role updated");
+  mainMenu();
+};
+
+mainMenu();
