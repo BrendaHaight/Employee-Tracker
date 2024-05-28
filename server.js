@@ -1,9 +1,5 @@
 const inquirer = require("inquirer");
-const express = require("express");
 const { Pool } = require("pg");
-
-const app = express();
-const PORT = process.env.PORT || 3001;
 
 const pool = new Pool({
   host: "localhost",
@@ -161,9 +157,15 @@ const addEmployee = async () => {
     },
   ]);
 
+  // Get role details for the selected role
+  const selectedRole = roles.rows.find((r) => r.id === role);
+  const title = selectedRole.title;
+  const salary = selectedRole.salary;
+  const department = selectedRole.department_id;
+
   await pool.query(
-    "INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)",
-    [firstName, lastName, role, manager]
+    "INSERT INTO employees (first_name, last_name, role_id, title, department, salary, manager_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+    [firstName, lastName, role, title, department, salary, manager]
   );
   console.log(`Added employee: ${firstName} ${lastName}`);
 };
@@ -196,10 +198,15 @@ const updateEmployeeRole = async () => {
     },
   ]);
 
-  await pool.query("UPDATE employees SET role_id = $1 WHERE id = $2", [
-    role,
-    employee,
-  ]);
+  const selectedRole = roles.rows.find((r) => r.id === role);
+  const title = selectedRole.title;
+  const salary = selectedRole.salary;
+  const department = selectedRole.department_id;
+
+  await pool.query(
+    "UPDATE employees SET role_id = $1, title = $2, department = $3, salary = $4 WHERE id = $5",
+    [role, title, department, salary, employee]
+  );
   console.log("Employee role updated");
   mainMenu();
 };
