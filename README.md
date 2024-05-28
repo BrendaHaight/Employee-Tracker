@@ -49,7 +49,7 @@ psql -U postgres -d employee_tracker -f schema.sql
 psql -U postgres -d employee_tracker -f seeds.sql
 ```
 
-## usage
+## Usage
 
 1. Start the application by running the following command:
 
@@ -70,3 +70,36 @@ node index.js
   - `id`: `SERIAL PRIMARY KEY`
   - `title`: `VARCHAR(60) NOT NULL`
   - `Salary`: `DECIMAL NOT NULL`
+  - `department_id`: `INTEGER`, foreign key references `roles(id)`
+  - `manager_id`: `INTEGER`, foreingn key references `employees(id)`
+
+## Features
+
+- View all departments
+- View all roles
+- View all employees
+- Add a department
+- Add a role
+- Add an employee
+- Update an employee tole
+
+## Technologies Used
+
+- Node.js
+- Inquirer
+- PostgresSQL
+
+## License
+
+This project licensed under the MIT License
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## Questions
+
+If you have any questions, please feel free to reach out:
+
+- Github: BrendaHaight
+- Email: brendahaightt@gmail.com
