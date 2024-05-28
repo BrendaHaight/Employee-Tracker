@@ -16,10 +16,17 @@ INSERT INTO roles (title, salary, department) VALUES
 ('Senior Software Engineer', 95000, 6);
 
 INSERT INTO employees (first_name, last_name, role_id, title, department, salary, manager_id) VALUES
-('Austin', 'Powers', 1 ,'HR Manager', 3, 60000, 7 ),
-('Jane', 'Smith', 2,'Marketing Coordinator', 2, 70000, 5 ),
-('John', 'Doe', 3,'Sale Representative',3, 45000, NULL),
-('Cindy', 'White', 1,'Software Engineer',5, 75000, 1),
-('Michael', 'Johnson', 5,'Senior Software Engineer', 5, 95000, NULL),
-('Emily', 'Davis', 4,'Customer Service Representative', 4, 45000, NULL),
-('William', 'Brown', 5,'Executive',6, 90000, NULL);
+-- Managers
+('Austin', 'Powers', 1, 'HR Manager', 1, 60000, NULL), -- HR Manager
+('Jane', 'Smith', 2, 'Marketing Coordinator', 2, 70000, NULL), -- Marketing Coordinator
+('Michael', 'Johnson', 7, 'Senior Software Engineer', 5, 95000, NULL), -- Senior Software Engineer
+('William', 'Brown', 4, 'Executive', 6, 90000, NULL), -- Executive (No manager)
+-- Employees with managers
+('Cindy', 'White', 6, 'Software Engineer', 5, 75000, 1), -- Managed by HR Manager
+('Emily', 'Davis', 3, 'Customer Service Representative', 4, 45000, 1), -- Managed by HR Manager
+('John', 'Doe', 5, 'Sales Representative', 3, 45000, 2), -- Managed by Marketing Coordinator
+('Lisa', 'Simpson', 6, 'Software Engineer', 5, 75000, 7), -- Managed by Senior Software Engineer
+('Naruto', 'Uzumaki', 3, 'Customer Service Representative', 4, 45000, 7), -- Managed by Senior Software Engineer
+('Itachi', 'Uchiha', 2, 'Marketing Coordinator', 2, 70000, 2), -- Managed by Marketing Coordinator
+('Sasuke', 'Uchiha', 5, 'Sales Representative', 3, 45000, 7), -- Managed by Senior Software Engineer
+('Hinata', 'Hyuga', 7, 'Senior Software Engineer', 5, 95000, 1); -- Managed by HR Manager
