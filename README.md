@@ -73,6 +73,8 @@ node index.js
   - `department_id`: `INTEGER`, foreign key references `roles(id)`
   - `manager_id`: `INTEGER`, foreingn key references `employees(id)`
 
+[Demonstration](https://drive.google.com/file/d/1att0-qMtFFkUjL6bAukn0zUFoMkPny_P/view)
+
 ## Features
 
 - View all departments
